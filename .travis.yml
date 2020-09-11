@@ -13,5 +13,6 @@ install:
   - bundle install
 script:
   - bundle exec rake spec
+  - echo $DOCKERHUB_TOKEN | docker login -u residentadvisor --password-stdin
   - docker build -t residentadvisor/spotify-token-swap-service:1.0.0 .
   - docker push residentadvisor/spotify-token-swap-service:1.0.0
