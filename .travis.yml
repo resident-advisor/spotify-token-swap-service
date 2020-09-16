@@ -1,18 +1,32 @@
 ---
-language: ruby
-services:
-  - docker
-rvm:
-  - 2.3.6
-  - 2.4.0
-  - 2.4.1
-  - 2.4.3
-  - 2.5.0
-install:
-  - gem install bundler:1.17.2
-  - bundle install
-script:
-  - bundle exec rake spec
-  - echo $DOCKERHUB_TOKEN | docker login -u residentadvisor --password-stdin
-  - docker build -t residentadvisor/spotify-token-swap-service:1.0.0 .
-  - docker push residentadvisor/spotify-token-swap-service:1.0.0
+stages:
+  - test
+  - name: release
+    if: branch = dockerise
+
+_ruby_job: &ruby_job
+  stage: test
+  language: ruby
+  install:
+    - gem install bundler:1.17.2
+    - bundle install
+jobs:
+  include:
+    - rvm: 2.3.6
+      <<: *ruby_job
+    - rvm: 2.4.0
+      <<: *ruby_job
+    - rvm: 2.4.1
+      <<: *ruby_job
+    - rvm: 2.4.3
+      <<: *ruby_job
+    - rvm: 2.5.0
+      <<: *ruby_job
+    - stage: release
+      language: shell
+      services:
+        - docker
+      script:
+        - echo $DOCKERHUB_TOKEN | docker login -u residentadvisor --password-stdin
+        - docker build -t residentadvisor/spotify-token-swap-service:1.0.0 .
+        - docker push residentadvisor/spotify-token-swap-service:1.0.0
