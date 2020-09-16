@@ -3,9 +3,6 @@ stages:
   - test
   - name: release
     if: branch = master
-env:
-  - DOCKER_VERSION=1.0.0
-
 _ruby_job: &ruby_job
   stage: test
   language: ruby
@@ -28,6 +25,8 @@ jobs:
       language: shell
       services:
         - docker
+      env:
+        - DOCKER_VERSION=1.0.0
       script:
         - echo $DOCKER_TOKEN | docker login -u $DOCKER_USER --password-stdin
         - docker build -t $DOCKER_IMAGE:$DOCKER_VERSION $DOCKER_IMAGE:latest .
