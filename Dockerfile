@@ -16,4 +16,4 @@ RUN bundle install
 
 COPY . .
 
-CMD ["rackup"]
+CMD ["rackup", "--host", "0.0.0.0"]
